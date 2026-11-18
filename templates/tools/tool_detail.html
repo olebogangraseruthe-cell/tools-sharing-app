@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ tool.name }} - ToolShare{% endblock %}
+{% block content %}
+  <div class="detail">
+    <h1>{{ tool.name }}</h1>
+    {% if tool.photo %}<img src="{{ tool.photo.url }}" alt="{{ tool.name }}" width="400">{% endif %}
+    <p>{{ tool.get_category_display }} &middot; owner: {{ tool.owner.username }}</p>
+    <p><span class="badge {{ tool.status }}">{{ tool.get_status_display }}</span></p>
+    <p>{{ tool.description|linebreaksbr }}</p>
+
+    {% if not user.is_authenticated %}
+      <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to request this tool.</p>
+    {% elif tool.owner == user %}
+      <p><em>This is your tool.</em></p>
+    {% elif can_request %}
+      <form method="post" action="{% url 'request_tool' tool.pk %}">
+        {% csrf_token %}
+        <button type="submit">Request this tool</button>
+      </form>
+    {% elif already_requested %}
+      <p><em>You have a pending request for this tool.</em></p>
+    {% else %}
+      <p><em>This tool is currently borrowed.</em></p>
+    {% endif %}
+  </div>
+{% endblock %}

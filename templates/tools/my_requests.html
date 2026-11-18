@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>My requests</h1>
+  {% if borrow_requests %}
+    <table>
+      <tr><th>Tool</th><th>Owner</th><th>Requested</th><th>Status</th></tr>
+      {% for br in borrow_requests %}
+        <tr>
+          <td><a href="{% url 'tool_detail' br.tool.pk %}">{{ br.tool.name }}</a></td>
+          <td>{{ br.tool.owner.username }}</td>
+          <td>{{ br.requested_at|date:"j M Y H:i" }}</td>
+          <td><span class="badge {{ br.status }}">{{ br.get_status_display }}</span></td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>You have not requested any tools yet. <a href="{% url 'tool_list' %}">Browse tools</a>.</p>
+  {% endif %}
+{% endblock %}

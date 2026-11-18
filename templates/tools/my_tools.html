@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>My tools</h1>
+  {% if tools %}
+    <table>
+      <tr><th>Tool</th><th>Status</th><th></th></tr>
+      {% for tool in tools %}
+        <tr>
+          <td><a href="{% url 'tool_detail' tool.pk %}">{{ tool.name }}</a></td>
+          <td><span class="badge {{ tool.status }}">{{ tool.get_status_display }}</span></td>
+          <td>
+            {% if tool.status == 'borrowed' %}
+              <form method="post" action="{% url 'mark_returned' tool.pk %}">
+                {% csrf_token %}
+                <button type="submit">Mark as returned</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>You have not listed a tool yet. <a href="{% url 'add_tool' %}">Add one</a>.</p>
+  {% endif %}
+
+  <h2>Requests for my tools</h2>
+  {% if incoming %}
+    <table>
+      <tr><th>Tool</th><th>Borrower</th><th>Contact</th><th>Status</th><th></th></tr>
+      {% for br in incoming %}
+        <tr>
+          <td>{{ br.tool.name }}</td>
+          <td>{{ br.borrower.username }}</td>
+          <td>{{ br.borrower.email }}</td>
+          <td><span class="badge {{ br.status }}">{{ br.get_status_display }}</span></td>
+          <td>
+            {% if br.status == 'pending' %}
+              <form method="post" action="{% url 'approve_request' br.pk %}" style="display:inline">
+                {% csrf_token %}<button type="submit">Approve</button>
+              </form>
+              <form method="post" action="{% url 'decline_request' br.pk %}" style="display:inline">
+                {% csrf_token %}<button type="submit">Decline</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No requests yet.</p>
+  {% endif %}
+{% endblock %}

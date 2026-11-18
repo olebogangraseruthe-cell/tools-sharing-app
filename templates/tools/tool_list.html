@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Tools in the neighbourhood</h1>
+  <form method="get">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search by name">
+    <select name="category">
+      <option value="">All categories</option>
+      {% for value, label in categories %}
+        <option value="{{ value }}" {% if value == selected_category %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Search</button>
+  </form>
+  <br>
+  {% if tools %}
+    <div class="grid">
+      {% for tool in tools %}
+        <div class="card">
+          {% if tool.photo %}<img src="{{ tool.photo.url }}" alt="{{ tool.name }}">{% endif %}
+          <h3><a href="{% url 'tool_detail' tool.pk %}">{{ tool.name }}</a></h3>
+          <p>{{ tool.get_category_display }} &middot; owner: {{ tool.owner.username }}</p>
+          <span class="badge {{ tool.status }}">{{ tool.get_status_display }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No tools match your search.</p>
+  {% endif %}
+{% endblock %}

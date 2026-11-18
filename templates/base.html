@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ToolShare{% endblock %}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #f6f6f3; color: #222; }
+    nav { background: #2d6a4f; padding: 12px 24px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    nav a, nav button { color: #fff; text-decoration: none; background: none; border: 0; font: inherit; cursor: pointer; padding: 0; }
+    nav .brand { font-weight: bold; margin-right: auto; }
+    nav form { display: inline; margin: 0; }
+    main { max-width: 860px; margin: 24px auto; padding: 0 16px; }
+    .messages { list-style: none; padding: 0; }
+    .messages li { padding: 10px 14px; border-radius: 6px; background: #e8f3ed; margin-bottom: 8px; }
+    .messages li.error { background: #fde8e8; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 12px; }
+    .card img, .detail img { max-width: 100%; border-radius: 6px; }
+    .badge { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: #e8f3ed; }
+    .badge.borrowed, .badge.declined { background: #fde8e8; }
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="brand" href="{% url 'tool_list' %}">ToolShare</a>
+    <a href="{% url 'tool_list' %}">Browse</a>
+        {% if user.is_authenticated %}
+         <a href="{% url 'my_requests' %}">My requests</a>
+          <a href="{% url 'my_tools' %}">My tools</a>
+          <a href="{% url 'add_tool' %}">Add a tool</a>
+      {# MEMBER LINKS #}
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Log out ({{ user.username }})</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}">Log in</a>
+      <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+  </nav>
+  <main>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

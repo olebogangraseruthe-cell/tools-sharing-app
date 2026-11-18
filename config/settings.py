@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(6do=j!dj)69h#dgwn8umq_(go7m%f)%x_xfec7x-)!7pb=p$7'
+SECRET_KEY = 'django-insecure-hjr(^-rz6nx3rq-ut%0bct4p^jkug@3o*o2-v%gwe^b6is)syk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,3 +126,10 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+# Where Django sends people after they log in or out
+LOGIN_REDIRECT_URL = 'tool_list'
+LOGOUT_REDIRECT_URL = 'tool_list'
+
+# Uploaded photos
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
