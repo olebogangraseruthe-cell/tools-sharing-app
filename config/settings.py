@@ -133,3 +133,23 @@ LOGOUT_REDIRECT_URL = 'tool_list'
 # Uploaded photos
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Deployment settings.
+# Locally, none of these environment variables exist, so nothing changes.
+# On a live server, set them in the host's dashboard (Render) or WSGI file (PythonAnywhere).
+import os
+
+SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+if os.environ.get('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+    CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+if os.environ.get('DATABASE_URL'):
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ['DATABASE_URL'], conn_max_age=600),
+    }
